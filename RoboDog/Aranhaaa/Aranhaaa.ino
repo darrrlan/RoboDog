@@ -82,7 +82,6 @@ void setServoPulse(uint8_t n, double pulse) {
   pulse /= pulselength;
   Serial.println(pulse);
   pwm.setPWM(n, 0, pulse);
-  
 }
 
 // ***** valores de referência *****
@@ -101,11 +100,6 @@ void loop() {
     Serial.println(incommingByte);
 //    incommingByte = incommingByte*100+50;
     Serial.println(incommingByte);
-    delay(100);
-    int perna = 1000;
-    int pata = 500;
-
-    if(aux == 0){
     pwm.writeMicroseconds(0, incommingByte);
     pwm.writeMicroseconds(1, incommingByte  );
     pwm.writeMicroseconds(2, incommingByte );
@@ -118,13 +112,12 @@ void loop() {
     pwm.writeMicroseconds(15, incommingByte);
     pwm.writeMicroseconds(14, incommingByte );
     pwm.writeMicroseconds(13, incommingByte);
+    delay(100);
+    int perna = 1000;
+    int pata = 500;
 
    for (int i = 0; i <= perna; i++) {
-    
-    
      pwm.writeMicroseconds(11, incommingByte + i );
-    }
-    aux++;
     }
 
    for (int i = 0; i <= pata; i++) {
@@ -156,6 +149,11 @@ void loop() {
 
    for (int i = pata; i >= 1; i--) {
      pwm.writeMicroseconds(15, incommingByte - i );
+   }
+
+   for (int i = 1000; i >= 1; i--) {
+     pwm.writeMicroseconds(11, incommingByte + i );
+
    }
    
 
