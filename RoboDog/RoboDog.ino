@@ -19,6 +19,8 @@
 
 #include <Wire.h>
 #include <Adafruit_PWMServoDriver.h>
+#include <math.h>
+#include "kin_inv.h"
 
 // called this way, it uses the default address 0x40
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
@@ -42,7 +44,7 @@ uint8_t servonum = 15;
 int aux = 0;
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.println("8 channel Servo test!");
 
   pwm.begin();
@@ -92,6 +94,23 @@ void setServoPulse(uint8_t n, double pulse) {
 
 int perna = 900;
 int pata = 450;
+Kin_inv perna1;
+Kin_inv perna2;
+Kin_inv perna3;
+Kin_inv perna4;
+float *obj1,*obj2,*obj3,*obj4;
+float motor1,motor2;
+
+typedef struct{
+
+  float pernafd[2];
+  float pernafe[2];
+  float pernatd[2];
+  float pernate[2];
+  
+}coord
+
+coord robodog
 
 void loop() {
   int incommingByte;
@@ -102,8 +121,6 @@ void loop() {
 //    incommingByte = incommingByte*100+50;
     Serial.println(incommingByte);
     delay(100);
-    int perna = 1000;
-    int pata = 500;
 
     if(aux == 0){
     pwm.writeMicroseconds(0, incommingByte);
@@ -119,44 +136,46 @@ void loop() {
     pwm.writeMicroseconds(14, incommingByte );
     pwm.writeMicroseconds(13, incommingByte);
 
-   for (int i = 0; i <= perna; i++) {
+  /* for (int i = 0; i <= perna; i++) {
     
     
      pwm.writeMicroseconds(11, incommingByte + i );
-    }
+    }*/
     aux++;
     }
 
-   for (int i = 0; i <= pata; i++) {
-     pwm.writeMicroseconds(10, incommingByte + i );
-   }
+ obj1 = perna1.movimento(robodog.pernafd[0],robodog.pernafd[1]);
+ obj2 = perna1.movimento(robodog.pernafe[0],robodog.pernafe[1]);
+ obj3 = perna1.movimento(robodog.pernatd[0],robodog.pernatd[1]);
+ obj4 = perna1.movimento(robodog.pernate[0],robodog.pernate[1]);
 
-   for (int i = perna; i >= 1; i--) {
-     pwm.writeMicroseconds(11, incommingByte + i );
-      pwm.writeMicroseconds(14, incommingByte - 1000 + i );
+ switch(estado_robodog){
+  case 0:
+  
+    
+  break;
+  case 1:
 
-   }
+  break;
+  case 2:
 
+  break;
+  case 3:
 
-   for (int i = pata; i >= 1; i--) {
-     pwm.writeMicroseconds(10, incommingByte + i );
-   }
+  break;
+ }
+ motor1 = map(obj[0],-90,90,550,2280);
+ motor2 = map(obj[1],-90,90,550,2280);
 
+ 
+ pwm.writeMicroseconds(11,motor1);
+ pwm.writeMicroseconds(10,motor2);
 
-   for (int i = 0; i <= pata; i++) {
-     pwm.writeMicroseconds(15, incommingByte - i );
-   }
-
-   for (int i = 1000; i >= 1; i--) {
-     pwm.writeMicroseconds(14, incommingByte - i );
-     pwm.writeMicroseconds(11, incommingByte - i +1000);
-
-   }
-
-
-   for (int i = pata; i >= 1; i--) {
-     pwm.writeMicroseconds(15, incommingByte - i );
-   }
+ obj = perna1.movimento(30,80);
+ motor1 = map(obj[0],-90,90,550,2280);
+ motor2 = map(obj[1],-90,90,550,2280);
+ pwm.writeMicroseconds(11,motor1);
+ pwm.writeMicroseconds(10,motor2);
    
 
 
